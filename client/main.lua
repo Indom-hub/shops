@@ -123,7 +123,22 @@ local function createPeds()
     if pedSpawned then return end
 
     for k, v in pairs(Config.Locations) do
-        local current = type(v["ped"]) == "number" and v["ped"] or joaat(v["ped"])
+        print("Current key (k): ", k)
+        print("Current value (v): ", v)
+
+        if not v then
+            print("v is nil, skipping iteration.")
+            goto continue
+        end
+
+        local current  -- Declare 'current' here to make it accessible throughout the loop
+
+        if v["ped"] then
+            current = type(v["ped"]) == "number" and v["ped"] or joaat(v["ped"])
+        else
+            print("v['ped'] is nil")
+            goto continue  -- Skip to the next iteration if 'v["ped"]' is nil
+        end
 
         RequestModel(current)
         while not HasModelLoaded(current) do
@@ -153,6 +168,7 @@ local function createPeds()
                 distance = 2.0
             })
         end
+        ::continue::
     end
 
     local current = type(Config.SellCasinoChips.ped) == 'number' and Config.SellCasinoChips.ped or joaat(Config.SellCasinoChips.ped)
@@ -243,6 +259,9 @@ end)
 if not Config.UseTarget then
     CreateThread(function()
         for shop in pairs(Config.Locations) do
+            print("Current key (k): ", k)
+            print("Current value (v): ", v)
+            print("Value of v['ped']: ", v["ped"])
             NewZones[#NewZones+1] = CircleZone:Create(vector3(Config.Locations[shop]["coords"]["x"], Config.Locations[shop]["coords"]["y"], Config.Locations[shop]["coords"]["z"]), Config.Locations[shop]["radius"], {
                 useZ = true,
                 debugPoly = false,
